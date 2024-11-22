@@ -79,17 +79,24 @@ const FurnitureList = () => {
     data.append("descripcion", editFormData.descripcion);
     data.append("precio", editFormData.precio);
     data.append("stock", editFormData.stock);
-    if (editFormData.foto) data.append("foto", editFormData.foto);
-
+    if (editFormData.foto) {
+      data.append("foto", editFormData.foto);
+    }
+  
     try {
-      await axios.put(`${backendURL}/muebles/${id}`, data, {
+      const response = await axios.put(`${backendURL}/muebles/${id}`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      alert("Mueble actualizado con éxito");
-      fetchFurniture();
-      setEditFormData(null);
+      if (response.data.success) {
+        alert("Mueble actualizado con éxito");
+        fetchFurniture();
+        setEditFormData(null);
+      } else {
+        alert(`Error al actualizar mueble: ${response.data.message}`);
+      }
     } catch (error) {
       console.error("Error al actualizar el mueble:", error);
+      alert("Ocurrió un error al intentar actualizar el mueble.");
     }
   };
 
@@ -188,11 +195,11 @@ const FurnitureList = () => {
                   Eliminar
                 </button>
               </div>
+              <p>{item.descripcion}</p>
+              <p>Precio: ${item.precio}</p>
+              <p>Stock: {item.stock}</p>
+              {item.image_url && <img src={item.image_url} alt={item.nombre} />}
             </div>
-            <p>{item.descripcion}</p>
-            <p>Precio: ${item.precio}</p>
-            <p>Stock: {item.stock}</p>
-            {item.image_url && <img src={item.image_url} alt={item.nombre} />}
           </li>
         ))}
       </ul>

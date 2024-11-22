@@ -47,7 +47,6 @@ const ClientList = () => {
 
   const handleCreateFormSubmit = async (event) => {
     event.preventDefault();
-
     try {
       const response = await axios.post(`${backendURL}/clientes`, createFormData);
       alert("Cliente creado con éxito");
@@ -68,14 +67,21 @@ const ClientList = () => {
 
   const handleEditFormSubmit = async (event, id) => {
     event.preventDefault();
-
+  
     try {
-      await axios.put(`${backendURL}/clientes/${id}`, editFormData);
-      alert("Cliente actualizado con éxito");
-      fetchClients();
-      setEditFormData(null);
+      const response = await axios.put(`${backendURL}/clientes/${id}`, editFormData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      if (response.data.success) {
+        alert("Cliente actualizado con éxito");
+        fetchClients();
+        setEditFormData(null);
+      } else {
+        alert(`Error al actualizar cliente: ${response.data.message}`);
+      }
     } catch (error) {
       console.error("Error al actualizar el cliente:", error);
+      alert("Ocurrió un error al intentar actualizar el cliente.");
     }
   };
 
@@ -96,10 +102,10 @@ const ClientList = () => {
       <h2>Lista de Clientes</h2>
       <ul className="list">
         {clients.map((client) => (
-          <li key={client.id_cliente} className="list-item">
-            {editFormData && editFormData.id_cliente === client.id_cliente && (
+          <li key={client.id} className="list-item">
+            {editFormData && editFormData.id === client.id ? (
               <form
-                onSubmit={(event) => handleEditFormSubmit(event, client.id_cliente)}
+                onSubmit={(event) => handleEditFormSubmit(event, client.id)}
                 className="form edit-form"
               >
                 <input
@@ -146,7 +152,7 @@ const ClientList = () => {
                   placeholder="Notas"
                   value={editFormData.notas}
                   onChange={handleEditInputChange}
-                />
+                ></textarea>
                 <button type="submit">Guardar Cambios</button>
                 <button
                   type="button"
@@ -156,39 +162,30 @@ const ClientList = () => {
                   Cancelar
                 </button>
               </form>
-            )}
-            <div className="item-details">
-              <strong>{client.nombre}</strong>
-              <div className="item-buttons">
-                <button
-                  className="button edit"
-                  onClick={() =>
-                    setEditFormData({
-                      id_cliente: client.id_cliente,
-                      nombre: client.nombre,
-                      direccion: client.direccion,
-                      email: client.email,
-                      telefono1: client.telefono1,
-                      telefono2: client.telefono2,
-                      notas: client.notas,
-                    })
-                  }
-                >
-                  Editar
-                </button>
-                <button
-                  className="button danger"
-                  onClick={() => handleDelete(client.id_cliente)}
-                >
-                  Eliminar
-                </button>
+            ) : (
+              <div className="item-details">
+                <strong>{client.nombre}</strong>
+                <p>Dirección: {client.direccion}</p>
+                <p>Email: {client.email}</p>
+                <p>Teléfono 1: {client.telefono1}</p>
+                <p>Teléfono 2: {client.telefono2}</p>
+                <p>Notas: {client.notas}</p>
+                <div className="item-buttons">
+                  <button
+                    className="button edit"
+                    onClick={() => setEditFormData(client)}
+                  >
+                    Editar
+                  </button>
+                  <button
+                    className="button danger"
+                    onClick={() => handleDelete(client.id)}
+                  >
+                    Eliminar
+                  </button>
+                </div>
               </div>
-            </div>
-            <p>Dirección: {client.direccion}</p>
-            <p>Email: {client.email}</p>
-            <p>Teléfono 1: {client.telefono1}</p>
-            <p>Teléfono 2: {client.telefono2}</p>
-            <p>Notas: {client.notas}</p>
+            )}
           </li>
         ))}
       </ul>
@@ -200,7 +197,9 @@ const ClientList = () => {
         >
           {showCreateForm ? "Ocultar Formulario" : "Crear Nuevo Cliente"}
         </button>
-        <a href="/" className="button home-button">Regresar al Inicio</a>
+        <a href="/" className="button home-button">
+          Regresar al Inicio
+        </a>
       </div>
 
       {showCreateForm && (
@@ -249,7 +248,7 @@ const ClientList = () => {
             placeholder="Notas"
             value={createFormData.notas}
             onChange={handleCreateInputChange}
-          />
+          ></textarea>
           <button type="submit">Crear Cliente</button>
         </form>
       )}

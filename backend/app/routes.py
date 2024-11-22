@@ -51,10 +51,17 @@ def get_muebles():
         return response_error(str(e))
 
 @bp.route('/muebles/<string:mueble_id>', methods=['PUT'])
+@bp.route('/muebles/<string:mueble_id>', methods=['PUT'])
 def update_mueble(mueble_id):
     try:
-        updates = request.json
-        result = Mueble.update(mueble_id, updates)
+        updates = request.form.to_dict()
+        valid_fields = ["nombre", "descripcion", "precio", "stock"]
+        filtered_updates = {k: v for k, v in updates.items() if k in valid_fields and v is not None}
+
+        if not filtered_updates:
+            return response_error("No valid fields provided to update.")
+
+        result = Mueble.update(mueble_id, filtered_updates)
         if result['success']:
             return response_success(None, result['message'])
         return response_error(result['message'])
@@ -99,7 +106,13 @@ def get_clientes():
 def update_cliente(cliente_id):
     try:
         updates = request.json
-        result = Cliente.update(cliente_id, updates)
+        valid_fields = ["nombre", "direccion", "email", "telefono1", "telefono2", "notas"]
+        filtered_updates = {k: v for k, v in updates.items() if k in valid_fields and v is not None}
+        
+        if not filtered_updates:
+            return response_error("No valid fields provided to update.")
+        
+        result = Cliente.update(cliente_id, filtered_updates)
         if result['success']:
             return response_success(None, result['message'])
         return response_error(result['message'])
