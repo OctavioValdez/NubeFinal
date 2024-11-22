@@ -16,8 +16,8 @@ const FurnitureList = () => {
 
   useEffect(() => {
     axios
-      .get(`${backendURL}/muebles`)
-      .then((response) => setFurniture(response.data))
+        .get(`${backendURL}/muebles`)
+        .then((response) => setFurniture(response.data.data))
           .catch((error) => console.error(error));
   }, []);
 
@@ -55,12 +55,13 @@ const FurnitureList = () => {
       <h2>Lista de Muebles</h2>
       <ul className="list">
         {furniture.map((item) => (
-          <li key={item.id} className="list-item">
-            <strong>{item.name}</strong>
-            <p>{item.description}</p>
-            <p>Precio: ${item.price}</p>
-            <p>Stock: {item.stock}</p>
-          </li>
+            <li key={item.id} className="list-item">
+                <strong>{item.nombre}</strong>
+                <p>{item.descripcion}</p>
+                <p>Precio: ${item.precio}</p>
+                <p>Stock: {item.stock}</p>
+                {item.image_url && <img src={item.image_url} alt={item.nombre} />}
+            </li>
         ))}
       </ul>
 
