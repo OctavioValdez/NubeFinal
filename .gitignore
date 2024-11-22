@@ -1,0 +1,54 @@
+# Byte-compiled / optimized / compiled Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment directories
+env/
+
+# Flask-specific files
+instance/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs and databases
+*.log
+*.sqlite3
+*.db
+*.sqlite
+
+# Environment variables
+.env
+.env.*
+
+# Docker
+*.dockerignore
+Dockerfile
+docker-compose.yml
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Testing files
+.tox/
+.coverage
+.pytest_cache/
+htmlcov/
