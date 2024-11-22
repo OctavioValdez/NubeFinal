@@ -10,9 +10,10 @@
 
 ## CORRER API
 <code>cd backend</code>
-<code>pip -m venv env</code>
-<code>source env/Scripts/activate</code>
+<code>python -m venv env</code>
+<code>env/Scripts/activate</code>
 <code>pip install -r requirements.txt</code>
+<code>cd app</code>
 <code>python __init__.py</code>
 
 ## CORRER FRONTEND
