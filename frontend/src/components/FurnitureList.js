@@ -57,18 +57,25 @@ const FurnitureList = () => {
       const response = await axios.post(`${backendURL}/muebles`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      alert("Mueble creado con éxito");
-      setFurniture([...furniture, response.data]);
-      setCreateFormData({
-        nombre: "",
-        descripcion: "",
-        precio: "",
-        stock: "",
-        foto: null,
-      });
-      setShowCreateForm(false);
+  
+      if (response.data.success) {
+        alert("Mueble creado con éxito");
+        // Agregar el nuevo mueble al estado existente
+        setFurniture((prevFurniture) => [...prevFurniture, response.data.data]);
+        setCreateFormData({
+          nombre: "",
+          descripcion: "",
+          precio: "",
+          stock: "",
+          foto: null,
+        });
+        setShowCreateForm(false);
+      } else {
+        alert(`Error al crear mueble: ${response.data.message}`);
+      }
     } catch (error) {
       console.error("Error al crear el mueble:", error);
+      alert("Ocurrió un error al intentar crear el mueble.");
     }
   };
 

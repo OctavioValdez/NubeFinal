@@ -49,19 +49,26 @@ const ClientList = () => {
     event.preventDefault();
     try {
       const response = await axios.post(`${backendURL}/clientes`, createFormData);
-      alert("Cliente creado con éxito");
-      setClients([...clients, response.data]);
-      setCreateFormData({
-        nombre: "",
-        direccion: "",
-        email: "",
-        telefono1: "",
-        telefono2: "",
-        notas: "",
-      });
-      setShowCreateForm(false);
+  
+      if (response.data.success) {
+        alert("Cliente creado con éxito");
+        // Agregar el nuevo cliente al estado existente
+        setClients((prevClients) => [...prevClients, response.data.data]);
+        setCreateFormData({
+          nombre: "",
+          direccion: "",
+          email: "",
+          telefono1: "",
+          telefono2: "",
+          notas: "",
+        });
+        setShowCreateForm(false);
+      } else {
+        alert(`Error al crear cliente: ${response.data.message}`);
+      }
     } catch (error) {
       console.error("Error al crear el cliente:", error);
+      alert("Ocurrió un error al intentar crear el cliente.");
     }
   };
 

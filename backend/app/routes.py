@@ -51,15 +51,26 @@ def get_muebles():
         return response_error(str(e))
 
 @bp.route('/muebles/<string:mueble_id>', methods=['PUT'])
-@bp.route('/muebles/<string:mueble_id>', methods=['PUT'])
 def update_mueble(mueble_id):
     try:
         updates = request.form.to_dict()
         valid_fields = ["nombre", "descripcion", "precio", "stock"]
         filtered_updates = {k: v for k, v in updates.items() if k in valid_fields and v is not None}
 
+        if 'foto' in request.files:
+            file = request.files['foto']
+            if file.filename == '':
+                return response_error("No se seleccionó un archivo válido.")
+            if allowed_file(file.filename):
+                upload_result = Mueble.upload_to_s3(file, s3_name)
+                if not upload_result['success']:
+                    return response_error(upload_result['message'])
+                filtered_updates['image_url'] = upload_result['file_url']
+            else:
+                return response_error("Tipo de archivo no permitido.")
+
         if not filtered_updates:
-            return response_error("No valid fields provided to update.")
+            return response_error("No hay campos válidos para actualizar.")
 
         result = Mueble.update(mueble_id, filtered_updates)
         if result['success']:
