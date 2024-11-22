@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const backendURL = "http://localhost:5000/";
+const backendURL = "http://localhost:5000";
 
 const FurnitureList = () => {
   const [furniture, setFurniture] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [editFormData, setEditFormData] = useState(null); // Formulario de edición
+  const [createFormData, setCreateFormData] = useState({
     nombre: "",
     descripcion: "",
     precio: "",
@@ -15,101 +16,232 @@ const FurnitureList = () => {
   });
 
   useEffect(() => {
-    axios
-        .get(`${backendURL}/muebles`)
-        .then((response) => setFurniture(response.data.data))
-          .catch((error) => console.error(error));
+    fetchFurniture();
   }, []);
 
-  const handleInputChange = (event) => {
+  const fetchFurniture = async () => {
+    try {
+      const response = await axios.get(`${backendURL}/muebles`);
+      setFurniture(response.data.data);
+    } catch (error) {
+      console.error("Error al cargar los muebles:", error);
+    }
+  };
+
+  const handleCreateInputChange = (event) => {
     const { name, value, files } = event.target;
-    setFormData({
-      ...formData,
+    setCreateFormData({
+      ...createFormData,
       [name]: files ? files[0] : value,
     });
   };
 
-  const handleFormSubmit = (event) => {
+  const handleEditInputChange = (event) => {
+    const { name, value, files } = event.target;
+    setEditFormData({
+      ...editFormData,
+      [name]: files ? files[0] : value,
+    });
+  };
+
+  const handleCreateFormSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData();
-    data.append("nombre", formData.nombre);
-    data.append("descripcion", formData.descripcion);
-    data.append("precio", formData.precio);
-    data.append("stock", formData.stock);
-    data.append("foto", formData.foto);
+    data.append("nombre", createFormData.nombre);
+    data.append("descripcion", createFormData.descripcion);
+    data.append("precio", createFormData.precio);
+    data.append("stock", createFormData.stock);
+    if (createFormData.foto) data.append("foto", createFormData.foto);
 
-    axios
-      .post(`${backendURL}/muebles`, data, {
+    try {
+      const response = await axios.post(`${backendURL}/muebles`, data, {
         headers: { "Content-Type": "multipart/form-data" },
-      })
-      .then((response) => {
-        alert("Mueble creado con éxito");
-        setFurniture([...furniture, response.data]);
-        setShowForm(false);
-      })
-      .catch((error) => console.error("Error al crear el mueble:", error));
-    };
+      });
+      alert("Mueble creado con éxito");
+      setFurniture([...furniture, response.data]);
+      setCreateFormData({
+        nombre: "",
+        descripcion: "",
+        precio: "",
+        stock: "",
+        foto: null,
+      });
+      setShowCreateForm(false);
+    } catch (error) {
+      console.error("Error al crear el mueble:", error);
+    }
+  };
+
+  const handleEditFormSubmit = async (event, id) => {
+    event.preventDefault();
+    const data = new FormData();
+    data.append("nombre", editFormData.nombre);
+    data.append("descripcion", editFormData.descripcion);
+    data.append("precio", editFormData.precio);
+    data.append("stock", editFormData.stock);
+    if (editFormData.foto) data.append("foto", editFormData.foto);
+
+    try {
+      await axios.put(`${backendURL}/muebles/${id}`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      alert("Mueble actualizado con éxito");
+      fetchFurniture();
+      setEditFormData(null);
+    } catch (error) {
+      console.error("Error al actualizar el mueble:", error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("¿Estás seguro de que deseas eliminar este mueble?")) {
+      try {
+        await axios.delete(`${backendURL}/muebles/${id}`);
+        alert("Mueble eliminado con éxito");
+        fetchFurniture();
+      } catch (error) {
+        console.error("Error al eliminar el mueble:", error);
+      }
+    }
+  };
 
   return (
     <div className="list-page">
       <h2>Lista de Muebles</h2>
       <ul className="list">
         {furniture.map((item) => (
-            <li key={item.id} className="list-item">
-                <strong>{item.nombre}</strong>
-                <p>{item.descripcion}</p>
-                <p>Precio: ${item.precio}</p>
-                <p>Stock: {item.stock}</p>
-                {item.image_url && <img src={item.image_url} alt={item.nombre} />}
-            </li>
+          <li key={item.id} className="list-item">
+            {editFormData && editFormData.id === item.id && (
+              <form
+                onSubmit={(event) => handleEditFormSubmit(event, item.id)}
+                className="form edit-form"
+              >
+                <input
+                  type="text"
+                  name="nombre"
+                  placeholder="Nombre del mueble"
+                  required
+                  value={editFormData.nombre}
+                  onChange={handleEditInputChange}
+                />
+                <input
+                  type="text"
+                  name="descripcion"
+                  placeholder="Descripción"
+                  required
+                  value={editFormData.descripcion}
+                  onChange={handleEditInputChange}
+                />
+                <input
+                  type="number"
+                  name="precio"
+                  placeholder="Precio"
+                  required
+                  value={editFormData.precio}
+                  onChange={handleEditInputChange}
+                />
+                <input
+                  type="number"
+                  name="stock"
+                  placeholder="Stock"
+                  required
+                  value={editFormData.stock}
+                  onChange={handleEditInputChange}
+                />
+                <input
+                  type="file"
+                  name="foto"
+                  onChange={handleEditInputChange}
+                />
+                <button type="submit">Guardar Cambios</button>
+                <button
+                  type="button"
+                  onClick={() => setEditFormData(null)}
+                  className="button danger"
+                >
+                  Cancelar
+                </button>
+              </form>
+            )}
+            <div className="item-details">
+              <strong>{item.nombre}</strong>
+              <div className="item-buttons">
+                <button
+                  className="button edit"
+                  onClick={() =>
+                    setEditFormData({
+                      id: item.id,
+                      nombre: item.nombre,
+                      descripcion: item.descripcion,
+                      precio: item.precio,
+                      stock: item.stock,
+                      foto: null,
+                    })
+                  }
+                >
+                  Editar
+                </button>
+                <button
+                  className="button danger"
+                  onClick={() => handleDelete(item.id)}
+                >
+                  Eliminar
+                </button>
+              </div>
+            </div>
+            <p>{item.descripcion}</p>
+            <p>Precio: ${item.precio}</p>
+            <p>Stock: {item.stock}</p>
+            {item.image_url && <img src={item.image_url} alt={item.nombre} />}
+          </li>
         ))}
       </ul>
 
       <div className="button-container">
-        <button
-          className="button"
-          onClick={() => setShowForm(!showForm)}
-        >
-          {showForm ? "Ocultar Formulario" : "Crear Nuevo Mueble"}
+        <button className="button create-button" onClick={() => setShowCreateForm(!showCreateForm)}>
+          {showCreateForm ? "Ocultar Formulario" : "Crear Nuevo Mueble"}
         </button>
-        <a href="/" className="button">Regresar al Inicio</a>
+        <a href="/" className="button home-button">Regresar al Inicio</a>
       </div>
 
-      {showForm && (
-        <form onSubmit={handleFormSubmit} className="form">
+      {showCreateForm && (
+        <form onSubmit={handleCreateFormSubmit} className="form">
           <input
             type="text"
             name="nombre"
             placeholder="Nombre del mueble"
             required
-            onChange={handleInputChange}
+            value={createFormData.nombre}
+            onChange={handleCreateInputChange}
           />
           <input
             type="text"
             name="descripcion"
             placeholder="Descripción"
             required
-            onChange={handleInputChange}
+            value={createFormData.descripcion}
+            onChange={handleCreateInputChange}
           />
           <input
             type="number"
             name="precio"
             placeholder="Precio"
             required
-            onChange={handleInputChange}
+            value={createFormData.precio}
+            onChange={handleCreateInputChange}
           />
           <input
             type="number"
             name="stock"
             placeholder="Stock"
             required
-            onChange={handleInputChange}
+            value={createFormData.stock}
+            onChange={handleCreateInputChange}
           />
           <input
             type="file"
             name="foto"
-            required
-            onChange={handleInputChange}
+            onChange={handleCreateInputChange}
           />
           <button type="submit">Crear Mueble</button>
         </form>

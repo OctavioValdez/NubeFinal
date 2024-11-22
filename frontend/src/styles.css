@@ -1,4 +1,4 @@
-/* Estilos generales */
+/* General styles */
 body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
@@ -17,7 +17,7 @@ h1, h2 {
   color: #444;
 }
 
-/* Header estilos */
+/* Header styles */
 .header {
   background-color: #007bff;
   color: white;
@@ -51,7 +51,7 @@ h1, h2 {
   padding: 20px;
 }
 
-/* List page estilos */
+/* List page styles */
 .list-page {
   max-width: 800px;
   margin: 20px auto;
@@ -69,18 +69,123 @@ h1, h2 {
 .list-item {
   padding: 10px;
   border-bottom: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.list-item:last-child {
-  border-bottom: none;
+.item-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-buttons {
+  display: flex;
+  gap: 10px;
 }
 
 .list-item strong {
-  display: block;
   font-size: 18px;
+  color: #333;
 }
 
-/* Contenedor de botones */
+/* Formulario de edición */
+.edit-form {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.edit-form input {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #dddddd;
+}
+
+.edit-form button {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-form .button {
+  background-color: #28a745;
+  color: white;
+}
+
+.edit-form .button:hover {
+  background-color: #218838;
+}
+
+.edit-form .button.danger {
+  background-color: #dc3545;
+}
+
+.edit-form .button.danger:hover {
+  background-color: #c82333;
+}
+
+/* Botones generales */
+.button {
+  display: inline-block;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Botón de editar */
+.button.edit {
+  background-color: #28a745;
+}
+
+.button.edit:hover {
+  background-color: #218838;
+}
+
+/* Botón de peligro */
+.button.danger {
+  background-color: #dc3545;
+}
+
+.button.danger:hover {
+  background-color: #c82333;
+}
+
+/* Botones específicos */
+.create-button {
+  background-color: #007bff;
+}
+
+.create-button:hover {
+  background-color: #0056b3;
+}
+
+.home-button {
+  background-color: #6c757d;
+}
+
+.home-button:hover {
+  background-color: #5a6268;
+}
+
+/* Contenedor de los botones */
 .button-container {
   display: flex;
   justify-content: space-between;
@@ -88,25 +193,7 @@ h1, h2 {
   margin-top: 20px;
 }
 
-/* Botón general */
-.button {
-  display: inline-block;
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  border: none;
-}
-
-.button:hover {
-  background-color: #0056b3;
-}
-
-/* Form estilos */
+/* Form styles */
 .form {
   margin-top: 20px;
   display: flex;
@@ -134,7 +221,7 @@ h1, h2 {
   background-color: #218838;
 }
 
-/* Animación */
+/* Animation */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -146,7 +233,14 @@ h1, h2 {
   }
 }
 
-/* Home estilos */
+/* Imagen en lista */
+.list-item img {
+  max-width: 500px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+/* Home styles */
 .home {
   text-align: center;
   padding: 50px 20px;
@@ -158,9 +252,15 @@ h1, h2 {
 
 .home-buttons .button {
   margin: 10px;
+  background-color: #6c757d;
 }
 
-/* Form page estilos (Register y Login) */
+.home-buttons .button:hover {
+  margin: 10px;
+  background-color: #5a6268;
+}
+
+/* Form page styles (Register and Login) */
 .form-page {
   max-width: 400px;
   margin: 50px auto;
@@ -204,7 +304,7 @@ h1, h2 {
   background-color: #0056b3;
 }
 
-/* Responsividad */
+/* Responsive Design */
 @media (max-width: 768px) {
   .nav-container {
     flex-direction: column;
@@ -217,6 +317,11 @@ h1, h2 {
 
   .list-page {
     padding: 10px;
+  }
+
+  .button-container {
+    flex-direction: column;
+    gap: 10px;
   }
 
   .button {
