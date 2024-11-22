@@ -1,0 +1,239 @@
+/* Estilos generales */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+a {
+  text-decoration: none;
+}
+
+h1, h2 {
+  margin: 0 0 20px 0;
+  text-align: center;
+  color: #444;
+}
+
+/* Header estilos */
+.header {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-links, .auth-links {
+  display: flex;
+  gap: 15px;
+}
+
+.nav-link {
+  color: white;
+  font-size: 16px;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+/* Main container */
+.main-container {
+  padding: 20px;
+}
+
+/* List page estilos */
+.list-page {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+}
+
+.list-item {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-item strong {
+  display: block;
+  font-size: 18px;
+}
+
+/* Contenedor de botones */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* Botón general */
+.button {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border: none;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+/* Form estilos */
+.form {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.form input, .form button {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.form button {
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border: none;
+}
+
+.form button:hover {
+  background-color: #218838;
+}
+
+/* Animación */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Home estilos */
+.home {
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.home-buttons {
+  margin-top: 20px;
+}
+
+.home-buttons .button {
+  margin: 10px;
+}
+
+/* Form page estilos (Register y Login) */
+.form-page {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.form-page h2 {
+  margin-bottom: 20px;
+  color: #444;
+}
+
+.form-page .form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-page .form input {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.form-page .form button {
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-page .form button:hover {
+  background-color: #0056b3;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .nav-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .auth-links {
+    margin-top: 10px;
+  }
+
+  .list-page {
+    padding: 10px;
+  }
+
+  .button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .form input, .form button {
+    font-size: 14px;
+  }
+
+  .form-page {
+    margin: 20px auto;
+    padding: 15px;
+  }
+
+  .form-page h2 {
+    font-size: 18px;
+  }
+}
