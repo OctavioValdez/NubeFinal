@@ -172,6 +172,10 @@ const FurnitureList = () => {
             )}
             <div className="item-details">
               <strong>{item.nombre}</strong>
+              <p>{item.descripcion}</p>
+              <p>Precio: ${item.precio}</p>
+              <p>Stock: {item.stock}</p>
+              {item.image_url && <img src={item.image_url} alt={item.nombre} />}
               <div className="item-buttons">
                 <button
                   className="button edit"
@@ -195,10 +199,6 @@ const FurnitureList = () => {
                   Eliminar
                 </button>
               </div>
-              <p>{item.descripcion}</p>
-              <p>Precio: ${item.precio}</p>
-              <p>Stock: {item.stock}</p>
-              {item.image_url && <img src={item.image_url} alt={item.nombre} />}
             </div>
           </li>
         ))}

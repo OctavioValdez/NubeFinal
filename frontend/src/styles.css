@@ -253,10 +253,13 @@ h1, h2 {
 
 /* Imagen en lista */
 .list-item img {
-  max-width: 500px;
+  max-width: 60%;
   margin-top: 10px;
   border-radius: 5px;
+  display: block;
+  margin: 0 auto; 
 }
+
 
 /* Home styles */
 .home {
