@@ -10,13 +10,20 @@
 
 ## CORRER API
 <code>cd backend</code>
+
 <code>python -m venv env</code>
+
 <code>env/Scripts/activate</code>
+
 <code>pip install -r requirements.txt</code>
+
 <code>cd app</code>
+
 <code>python __init__.py</code>
 
 ## CORRER FRONTEND
 <code>cd frontend</code>
+
 <code>npm install</code>
+
 <code>npm start</code>
