@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const backendURL = "http://localhost:5000/api";
+const backendURL = "http://localhost:5000/";
 
 const FurnitureList = () => {
   const [furniture, setFurniture] = useState([]);
@@ -16,9 +16,9 @@ const FurnitureList = () => {
 
   useEffect(() => {
     axios
-      .get(`${backendURL}/furniture`)
+      .get(`${backendURL}/muebles`)
       .then((response) => setFurniture(response.data))
-      .catch((error) => console.error(error));
+          .catch((error) => console.error(error));
   }, []);
 
   const handleInputChange = (event) => {
@@ -39,7 +39,7 @@ const FurnitureList = () => {
     data.append("foto", formData.foto);
 
     axios
-      .post(`${backendURL}/upload_mueble`, data, {
+      .post(`${backendURL}/muebles`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((response) => {
@@ -48,7 +48,7 @@ const FurnitureList = () => {
         setShowForm(false);
       })
       .catch((error) => console.error("Error al crear el mueble:", error));
-  };
+    };
 
   return (
     <div className="list-page">
