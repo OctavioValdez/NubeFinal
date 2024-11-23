@@ -363,3 +363,146 @@ h1, h2 {
     font-size: 18px;
   }
 }
+
+/* Página de cotización */
+.form-page-quotation {
+  max-width: 700px; /* Reducir el ancho */
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.form-page-quotation h2 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 24px; /* Tamaño más pequeño */
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 8px;
+}
+
+/* Estilo del formulario */
+.form-page-quotation .form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Reducir el espacio entre campos */
+}
+
+.form-page-quotation .form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px; /* Tamaño más pequeño */
+  color: #555;
+  font-weight: bold;
+}
+
+.form-page-quotation .form select,
+.form-page-quotation .form input {
+  padding: 10px; /* Tamaño más compacto */
+  font-size: 14px; /* Tamaño más pequeño */
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s;
+}
+
+.form-page-quotation .form select:focus,
+.form-page-quotation .form input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+}
+
+/* Muebles */
+.furniture-selection {
+  display: grid; /* Usar grid layout */
+  grid-template-columns: repeat(3, 1fr); /* Tres columnas */
+  gap: 15px; /* Espaciado uniforme */
+  margin-top: 10px;
+}
+
+.furniture-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 15px;
+  background: #f8f9fa;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  text-align: center;
+  transition: border-color 0.3s, background-color 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.furniture-item:hover {
+  background-color: #e9ecef;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.furniture-item.selected {
+  background-color: #d4edda;
+  border-color: #28a745;
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2);
+}
+
+.furniture-item span {
+  font-size: 14px;
+  color: #333;
+  font-weight: bold;
+}
+
+.quantity-input {
+  width: 60px;
+  padding: 6px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  text-align: center;
+}
+
+/* Botón */
+.form-page-quotation .form button {
+  padding: 12px; /* Tamaño más compacto */
+  font-size: 16px; /* Tamaño más pequeño */
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.form-page-quotation .form button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+/* Diseño responsivo */
+@media (max-width: 768px) {
+  .furniture-selection {
+    grid-template-columns: repeat(2, 1fr); /* Dos columnas en pantallas medianas */
+  }
+
+  .furniture-item {
+    width: 100%;
+  }
+
+  .form-page-quotation {
+    padding: 15px; /* Reducir el padding */
+  }
+
+  .form-page-quotation .form button {
+    width: 100%;
+  }
+}
+
+.check {
+  display: none;
+}

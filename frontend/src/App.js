@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Home from "./components/Home";
 import FurnitureList from "./components/FurnitureList";
 import ClientList from "./components/ClientList";
+import QuotationForm from "./components/QuotationForm";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import "./styles.css";
@@ -17,6 +18,7 @@ function App() {
               <Link to="/" className="nav-link">Inicio</Link>
               <Link to="/furniture" className="nav-link">Muebles</Link>
               <Link to="/clients" className="nav-link">Clientes</Link>
+              <Link to="/quotation" className="nav-link">Cotización</Link>
             </div>
             <div className="auth-links">
               <Link to="/login" className="nav-link">Iniciar Sesión</Link>
@@ -29,6 +31,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/furniture" element={<FurnitureList />} />
             <Route path="/clients" element={<ClientList />} />
+            <Route path="/quotation" element={<QuotationForm />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
           </Routes>
