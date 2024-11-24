@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const backendURL = "http://localhost:5000";
+const backendURL = process.env.BACKENDURL;
 
 const QuotationForm = () => {
   const [clients, setClients] = useState([]);

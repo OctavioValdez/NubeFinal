@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const backendURL = "http://localhost:5000";
+const backendURL = process.env.BACKENDURL;
 
 const ClientList = () => {
   const [clients, setClients] = useState([]);

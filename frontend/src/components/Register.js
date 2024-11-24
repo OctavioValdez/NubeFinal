@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const backendURL = "http://localhost:5000/api";
+const backendURL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const Register = () => {
   const [formData, setFormData] = useState({
