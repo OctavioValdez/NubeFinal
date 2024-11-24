@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const backendURL = process.env.BACKENDURL;
+const backendURL = process.env.REACT_APP_BACKEND_URL;
 
 const FurnitureList = () => {
   const [furniture, setFurniture] = useState([]);
