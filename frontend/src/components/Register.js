@@ -3,6 +3,8 @@ import axios from "axios";
 
 const backendURL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+console.log("Backend URL:", backendURL);
+
 const Register = () => {
   const [formData, setFormData] = useState({
     name: "",
