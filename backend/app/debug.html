@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cotización</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+    <h1>Cotización</h1>
+    <p>Cliente: {{cliente.nombre}}</p>
+    <p>Dirección: {{cliente.direccion}}</p>
+    <p>Teléfono: {{cliente.telefono}}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{muebles}}
+        </tbody>
+    </table>
+    <p>Costo de Flete: 1,000.00</p>
+    <p>Anticipo: 3,000.00</p>
+    <p>Garantía: 2,000.00</p>
+</body>
+</html>
