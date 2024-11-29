@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs').promises;
 const { PDFDocument } = require('pdf-lib');
 
-// Carga el archivo HTML
+// Cargamos el archivo HTML
 const loadTemplate = async (filePath) => {
     try {
         return await fs.readFile(filePath, 'utf-8');
