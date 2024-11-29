@@ -18,9 +18,9 @@
 
 <code>env/Scripts/activate</code>
 
-<code>pip install -r requirements.txt</code>
-
 <code>cd app</code>
+
+<code>pip install -r requirements.txt</code>
 
 <code>python **init**.py</code>
 
