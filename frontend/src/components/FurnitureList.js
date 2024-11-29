@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const backendURL = process.env.REACT_APP_BACKEND_URL;
+console.log("URL de backend configurada:", backendURL);
 
 const FurnitureList = () => {
   const [furniture, setFurniture] = useState([]);
@@ -20,8 +21,6 @@ const FurnitureList = () => {
   }, []);
 
   const fetchFurniture = async () => {
-    console.log("Iniciando fetchFurniture...");
-    console.log(`URL de backend configurada: ${BACKEND_URL}`);
     try {
       const response = await axios.get(`${backendURL}/muebles`);
       setFurniture(response.data.data);
