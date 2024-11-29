@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from models import Mueble, Cliente
 from utils import response_success, response_error, allowed_file
 from dotenv import load_dotenv
+import json
 import subprocess
 import os
 import uuid
@@ -164,26 +165,63 @@ def send_quotation():
         client_id = data['clientId']
         furniture = data['furniture']
 
-        # Obtener detalles del cliente (mock o consulta)
+        # Obtener detalles del cliente
         client_details = Cliente.table.get_item(Key={'id': client_id})['Item']
 
         json_data = {
-            "nombre_cliente": client_details['nombre'],
-            "telefono_1": client_details['telefono1'],
-            "telefono_2": client_details.get('telefono2', ''),
-            "domicilio": client_details['direccion'],
-            "fecha_entrega": data['deliveryDate'],
-            "hora_entrega": data['deliveryTime'],
-            "flete_importe": float(data['freightCost']),
-            "anticipo": float(data['advance']),
-            "garantia": float(data['warranty']),
+            "cliente": {
+                "nombre": client_details['nombre'],
+                "direccion": client_details['direccion'],
+                "telefono": client_details['telefono1'],
+            },
             "products": [
                 {"cantidad": m['quantity'], "producto": m['nombre'], "precio": m['precio']}
                 for m in furniture
             ],
+            "costo_flete": float(data['freightCost']),
+            "anticipo": float(data['advance']),
+            "garantia": float(data['warranty']),
         }
-        return jsonify({"success": True, "message": "Cotización enviada exitosamente.","data": json_data})
+
+        pdf_path = './cotizacion.pdf'
+        template_path = './template2.html'
+
+        # Ejecutar el script Node.js para generar el PDF
+        try:
+            result = subprocess.run(
+                [
+                    "node", "./generatePDF2.js",
+                    template_path,
+                    pdf_path,
+                    json.dumps(json_data, ensure_ascii=False)
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            print("Salida estándar:", result.stdout.decode())
+            print("Error estándar:", result.stderr.decode())
+        except subprocess.CalledProcessError as e:
+            print("Error al ejecutar el script Node.js:", e.stderr.decode())
+            raise Exception(f"Error al generar el PDF: {e.stderr.decode()}")
+
+        # Subir el PDF al bucket S3
+        with open(pdf_path, 'rb') as pdf_file:
+            s3_client.upload_fileobj(pdf_file, os.getenv('BUCKET_NAME'), 'cotizacion.pdf')
+
+        # Generar la URL del PDF en S3
+        pdf_url = f"https://{os.getenv('BUCKET_NAME')}.s3.amazonaws.com/cotizacion.pdf"
+
+        # Enviar el enlace al PDF por SNS
+        message = f"Hola {client_details['nombre']},\n\nAdjuntamos la cotización:\n{pdf_url}"
+        sns_client.publish(
+            TopicArn=os.getenv('SNS_TOPIC_ARN'),
+            Message=message,
+            Subject="Cotización Casa Diana"
+        )
+
+        return jsonify({"success": True, "message": "Cotización enviada exitosamente.", "pdf_url": pdf_url})
     except subprocess.CalledProcessError as e:
-        return jsonify({"success": False, "message": f"Error al generar el PDF: {str(e)}"})
+        return jsonify({"success": False, "message": f"Error al generar el PDF: {e.stderr.decode()}"}), 500
     except Exception as e:
-        return jsonify({"success": False, "message": str(e)})
+        return jsonify({"success": False, "message": str(e)}), 500

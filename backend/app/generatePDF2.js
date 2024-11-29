@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs').promises;
 const { PDFDocument } = require('pdf-lib');
 
-// Carga el archivo HTML
+// Cargamos el archivo HTML
 const loadTemplate = async (filePath) => {
     try {
         return await fs.readFile(filePath, 'utf-8');
@@ -54,14 +54,20 @@ const generatePDF = async (htmlFilePath, outputPath, jsonData) => {
     try {
         const htmlTemplate = await loadTemplate(htmlFilePath);
 
-        // Divide los productos en lotes de 6
+        const products = jsonData.products || [];
         const maxProducts = 6;
         const productChunks = [];
-        for (let i = 0; i < jsonData.products.length; i += maxProducts) {
-            productChunks.push(jsonData.products.slice(i, i + maxProducts));
+
+        for (let i = 0; i < products.length; i += maxProducts) {
+            productChunks.push(products.slice(i, i + maxProducts));
         }
 
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            timeout: 60000,
+        });
+
         const tempPdfPaths = [];
 
         for (let i = 0; i < productChunks.length; i++) {
@@ -70,7 +76,14 @@ const generatePDF = async (htmlFilePath, outputPath, jsonData) => {
 
             const filledHtml = replaceTemplate(htmlTemplate, currentData);
 
-            await page.setContent(filledHtml, { waitUntil: 'domcontentloaded' });
+            // Depuración del contenido HTML
+            await fs.writeFile('./debug.html', filledHtml);
+            console.log('HTML guardado en debug.html para inspección');
+
+            await page.setContent(filledHtml, {
+                waitUntil: 'domcontentloaded',
+                timeout: 60000, // Aumentar tiempo de espera
+            });
 
             const tempPdfPath = `./temp_${i + 1}.pdf`;
             await page.pdf({
@@ -110,11 +123,22 @@ if (require.main === module) {
     const args = process.argv.slice(2);
     const htmlFilePath = args[0];
     const outputPath = args[1];
-    const jsonData = JSON.parse(args[2]);
+    const jsonDataString = args[2];
 
-    generatePDF(htmlFilePath, outputPath, jsonData)
-        .then(() => console.log('PDF generado exitosamente.'))
-        .catch((err) => console.error('Error al generar el PDF:', err));
+    console.log("Argumentos recibidos:", { htmlFilePath, outputPath, jsonDataString });
+
+    try {
+        const jsonData = JSON.parse(jsonDataString);
+        console.log("JSON Data parseado correctamente:", jsonData);
+
+        generatePDF(htmlFilePath, outputPath, jsonData)
+            .then(() => console.log("PDF generado exitosamente."))
+            .catch((err) => {
+                console.error("Error al generar el PDF:", err);
+                process.exit(1);
+            });
+    } catch (err) {
+        console.error("Error al parsear el JSON:", err);
+        process.exit(1);
+    }
 }
-
-module.exports = { generatePDF };

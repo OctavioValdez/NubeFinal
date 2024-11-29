@@ -2,3 +2,5 @@ Flask
 python-dotenv
 boto3
 flask-cors
+pdf-lib
+puppeteer
