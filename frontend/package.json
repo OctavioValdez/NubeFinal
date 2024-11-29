@@ -12,7 +12,9 @@
     "react-router-dom": "^6.28.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "pdf-lib": "^1.17.1",
+    "puppeteer": "^23.9.0"
   },
   "scripts": {
     "start": "react-scripts start",

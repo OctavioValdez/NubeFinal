@@ -182,32 +182,7 @@ def send_quotation():
                 for m in furniture
             ],
         }
-        pdf_path = './cotizacion.pdf'
-        template_path = './app/template2.html'
-
-        # Llama al script de Node.js
-        subprocess.run(
-            [
-                "node", "./app/generatePDF2.js",
-                template_path, pdf_path, json.dumps(json_data)
-            ],
-            check=True
-        )
-
-        # Subir a S3
-        with open(pdf_path, 'rb') as pdf_file:
-            s3_client.upload_fileobj(pdf_file, os.getenv('BUCKET_NAME'), 'cotizacion.pdf')
-
-        # Enviar con SNS
-        pdf_url = f"https://{os.getenv('BUCKET_NAME')}.s3.amazonaws.com/cotizacion.pdf"
-        message = f"Hola {client_details['nombre']},\n\nAdjuntamos la cotización:\n{pdf_url}"
-        sns_client.publish(
-            TopicArn=os.getenv('SNS_TOPIC_ARN'),
-            Message=message,
-            Subject="Cotización Casa Diana"
-        )
-
-        return jsonify({"success": True, "message": "Cotización enviada exitosamente."})
+        return jsonify({"success": True, "message": "Cotización enviada exitosamente.","data": json_data})
     except subprocess.CalledProcessError as e:
         return jsonify({"success": False, "message": f"Error al generar el PDF: {str(e)}"})
     except Exception as e:
