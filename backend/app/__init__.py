@@ -15,6 +15,10 @@ def create_app():
     app.config['CLIENTES_TABLE'] = os.getenv('CLIENTES_TABLE')
     app.config['BUCKET_NAME'] = os.getenv('BUCKET_NAME')
 
+    print("AWS Configuration:")
+    for key in ['AWS_REGION', 'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'MUEBLES_TABLE', 'CLIENTES_TABLE', 'BUCKET_NAME']:
+        print(f"{key}: {app.config.get(key)}")
+
     app.register_blueprint(bp)
 
     return app
