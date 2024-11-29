@@ -20,6 +20,8 @@ const FurnitureList = () => {
   }, []);
 
   const fetchFurniture = async () => {
+    console.log("Iniciando fetchFurniture...");
+    console.log(`URL de backend configurada: ${BACKEND_URL}`);
     try {
       const response = await axios.get(`${backendURL}/muebles`);
       setFurniture(response.data.data);
