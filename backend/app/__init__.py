@@ -1,7 +1,6 @@
 from flask import Flask
 from routes import bp
 from flask_cors import CORS
-import boto3
 import os
 
 def create_app():
@@ -14,9 +13,10 @@ def create_app():
     app.config['MUEBLES_TABLE'] = os.getenv('MUEBLES_TABLE')
     app.config['CLIENTES_TABLE'] = os.getenv('CLIENTES_TABLE')
     app.config['BUCKET_NAME'] = os.getenv('BUCKET_NAME')
+    app.config['SNS_TOPIC_ARN'] = os.getenv('SNS_TOPIC_ARN')
 
     print("AWS Configuration:")
-    for key in ['AWS_REGION', 'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'MUEBLES_TABLE', 'CLIENTES_TABLE', 'BUCKET_NAME']:
+    for key in ['AWS_REGION', 'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'MUEBLES_TABLE', 'CLIENTES_TABLE', 'BUCKET_NAME', 'SNS_TOPIC_ARN']:
         print(f"{key}: {app.config.get(key)}")
 
     app.register_blueprint(bp)
@@ -24,7 +24,6 @@ def create_app():
     return app
 
 
-# Punto de entrada
 if __name__ == "__main__":
     app = create_app()
     app.run(host='0.0.0.0', port=5000, debug=True)

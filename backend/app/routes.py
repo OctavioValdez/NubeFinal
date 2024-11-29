@@ -2,12 +2,20 @@ from flask import Blueprint, request, jsonify
 from models import Mueble, Cliente
 from utils import response_success, response_error, allowed_file
 from dotenv import load_dotenv
+import subprocess
 import os
 import uuid
+import boto3
 
 load_dotenv()
 
 s3_name = os.getenv('BUCKET_NAME')
+sns_client = boto3.client(
+    'sns',
+    region_name=os.getenv('AWS_REGION'),
+    aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+    aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+)
 
 bp = Blueprint('routes', __name__)
 
@@ -140,3 +148,60 @@ def delete_cliente(cliente_id):
         return response_error(result['message'])
     except Exception as e:
         return response_error(str(e))
+    
+
+@bp.route('/send-quotation', methods=['POST'])
+def send_quotation():
+    try:
+        data = request.json
+        client_id = data['clientId']
+        furniture = data['furniture']
+
+        # Obtener detalles del cliente (mock o consulta)
+        client_details = Cliente.table.get_item(Key={'id': client_id})['Item']
+
+        json_data = {
+            "nombre_cliente": client_details['nombre'],
+            "telefono_1": client_details['telefono1'],
+            "telefono_2": client_details.get('telefono2', ''),
+            "domicilio": client_details['direccion'],
+            "fecha_entrega": data['deliveryDate'],
+            "hora_entrega": data['deliveryTime'],
+            "flete_importe": float(data['freightCost']),
+            "anticipo": float(data['advance']),
+            "garantia": float(data['warranty']),
+            "products": [
+                {"cantidad": m['quantity'], "producto": m['nombre'], "precio": m['precio']}
+                for m in furniture
+            ],
+        }
+        pdf_path = './cotizacion.pdf'
+        template_path = './app/template2.html'
+
+        # Llama al script de Node.js
+        subprocess.run(
+            [
+                "node", "./app/generatePDF2.js",
+                template_path, pdf_path, json.dumps(json_data)
+            ],
+            check=True
+        )
+
+        # Subir a S3
+        with open(pdf_path, 'rb') as pdf_file:
+            s3_client.upload_fileobj(pdf_file, os.getenv('BUCKET_NAME'), 'cotizacion.pdf')
+
+        # Enviar con SNS
+        pdf_url = f"https://{os.getenv('BUCKET_NAME')}.s3.amazonaws.com/cotizacion.pdf"
+        message = f"Hola {client_details['nombre']},\n\nAdjuntamos la cotización:\n{pdf_url}"
+        sns_client.publish(
+            TopicArn=os.getenv('SNS_TOPIC_ARN'),
+            Message=message,
+            Subject="Cotización Casa Diana"
+        )
+
+        return jsonify({"success": True, "message": "Cotización enviada exitosamente."})
+    except subprocess.CalledProcessError as e:
+        return jsonify({"success": False, "message": f"Error al generar el PDF: {str(e)}"})
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)})

@@ -73,27 +73,31 @@ const QuotationForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${backendURL}/send-quotation`, quotationData);
-      if (response.data.success) {
-        alert("Cotización enviada con éxito");
-        setQuotationData({
-          clientId: "",
-          furniture: [],
-          deliveryDate: "",
-          deliveryTime: "",
-          pickupDate: "",
-          pickupTime: "",
-          freightCost: "",
-          advance: "",
-          warranty: "",
+        const response = await axios.post(`${backendURL}/send-quotation`, {
+            clientId: quotationData.clientId,
+            furniture: quotationData.furniture.map((f) => ({
+                id: f.id,
+                nombre: f.nombre,
+                precio: f.precio,
+                quantity: f.quantity,
+            })),
+            deliveryDate: quotationData.deliveryDate,
+            deliveryTime: quotationData.deliveryTime,
+            pickupDate: quotationData.pickupDate,
+            pickupTime: quotationData.pickupTime,
+            freightCost: quotationData.freightCost,
+            advance: quotationData.advance,
+            warranty: quotationData.warranty,
         });
-      } else {
-        alert("Error al enviar la cotización");
-      }
+        if (response.data.success) {
+            alert("Cotización enviada con éxito.");
+        } else {
+            alert("Error: " + response.data.message);
+        }
     } catch (error) {
-      console.error("Error sending quotation:", error);
+        console.error("Error sending quotation:", error);
     }
-  };
+};
 
   const handleFurnitureItemClick = (e, item) => {
   // Verifica que el clic sea en el contenedor principal del item
