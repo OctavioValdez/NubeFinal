@@ -15,10 +15,6 @@ def create_app():
     app.config['BUCKET_NAME'] = os.getenv('BUCKET_NAME')
     app.config['SNS_TOPIC_ARN'] = os.getenv('SNS_TOPIC_ARN')
 
-    print("AWS Configuration:")
-    for key in ['AWS_REGION', 'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'MUEBLES_TABLE', 'CLIENTES_TABLE', 'BUCKET_NAME', 'SNS_TOPIC_ARN']:
-        print(f"{key}: {app.config.get(key)}")
-
     app.register_blueprint(bp)
 
     return app

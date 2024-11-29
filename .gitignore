@@ -9,6 +9,9 @@ __pycache__/
 
 # Virtual environment directories
 env/
+backend/node_modules
+frontend/node_modules
+node_modules/
 
 # Flask-specific files
 instance/
@@ -16,40 +19,6 @@ instance/
 *.pyo
 *.pyd
 
-# IDE / Editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Logs and databases
-*.log
-*.sqlite3
-*.db
-*.sqlite
-
 # Environment variables
 .env
 .env.*
-
-# Docker
-*.dockerignore
-Dockerfile
-docker-compose.yml
-
-# OS-generated files
-.DS_Store
-Thumbs.db
-
-# Build artifacts
-build/
-dist/
-*.egg-info/
-.eggs/
-
-# Testing files
-.tox/
-.coverage
-.pytest_cache/
-htmlcov/
