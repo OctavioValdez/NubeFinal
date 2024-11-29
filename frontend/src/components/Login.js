@@ -1,60 +1,80 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../firebaseConfig"; // Importar configuraciones de Firebase
+import "../App.css"; // Archivo de estilos CSS
 
-const backendURL = `${process.env.REACT_APP_BACKEND_URL}/api`;
+export default function Index() {
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const handleSignIn = async () => {
+    try {
+      console.log("Iniciando sesión con:", email);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log("Autenticación exitosa:", userCredential);
+      const user = userCredential.user;
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+      // Obtener el rol del usuario desde Firestore
+      const userDoc = doc(db, "users", email);
+      console.log("Obteniendo documento del usuario:", email);
+      const docSnap = await getDoc(userDoc);
 
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-    axios
-      .post(`${backendURL}/login`, formData)
-      .then((response) => {
-        alert("Inicio de sesión exitoso");
-        setFormData({ email: "", password: "" });
-      })
-      .catch((error) => {
-        console.error("Error en el inicio de sesión:", error);
-        alert("Credenciales incorrectas");
-      });
+      if (docSnap.exists()) {
+        const role = docSnap.data().role;
+        if (role === "admin") {
+          console.log("Navegando a: /homeAdmin");
+          window.location.href = "/homeAdmin";
+        } else if (role === "chofer") {
+          console.log("Navegando a: /homeChofer");
+          window.location.href = "/homeChofer";
+        } else {
+          alert("Rol desconocido. El rol del usuario no está definido.");
+        }
+      } else {
+        alert("Error: No se pudo encontrar el documento del usuario.");
+      }
+    } catch (error) {
+      console.error("Error de inicio de sesión:", error.code, error.message);
+      alert("Error de inicio de sesión: " + error.message);
+    }
   };
 
   return (
-    <div className="form-page">
-      <h2>Iniciar Sesión</h2>
-      <form onSubmit={handleFormSubmit} className="form">
-        <input
-          type="email"
-          name="email"
-          placeholder="Correo electrónico"
-          required
-          value={formData.email}
-          onChange={handleInputChange}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Contraseña"
-          required
-          value={formData.password}
-          onChange={handleInputChange}
-        />
-        <button type="submit">Iniciar Sesión</button>
-      </form>
+    <div className="container">
+      <div className="form-container">
+        <h1 className="title">CASA DIANA</h1>
+        <h2 className="subtitle">eventos</h2>
+        <h3 className="form-title">Iniciar sesión</h3>
+        <div className="input-container">
+          <input
+            type="email"
+            placeholder="Usuario"
+            className="input-field"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <div className="password-container">
+            <input
+              type={passwordVisible ? "text" : "password"}
+              placeholder="Contraseña"
+              className="input-field"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              className="toggle-password"
+              onClick={() => setPasswordVisible(!passwordVisible)}
+            >
+              {passwordVisible ? "Ocultar" : "Mostrar"}
+            </button>
+          </div>
+          <button className="submit-button" onClick={handleSignIn}>
+            Iniciar sesión
+          </button>
+        </div>
+      </div>
     </div>
   );
-};
-
-export default Login;
+}
