@@ -1,5 +1,5 @@
 from flask import Flask
-from .routes import bp
+from routes import bp
 from flask_cors import CORS
 import os
 
